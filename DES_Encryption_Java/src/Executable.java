@@ -9,9 +9,10 @@ public class Executable {
 			try {
 				if (choice == 0) {
 					System.out.println("\n\t1. DES Encrypt");
-					System.out.println("\t2. Get 64-bit Message/Key\n");
+					System.out.println("\t2. Get 64-bit Message/Key");
+					System.out.println("\t3. Translate Binary Message/Key\n");
 				}
-				System.out.print("Enter choice (0 to display options, 3 to exit) >> ");
+				System.out.print("Enter choice (0 to display options, 4 to exit) >> ");
 				choice = input.nextInt();
 			} catch(InputMismatchException ex) {
 				if(input.hasNextLine())
@@ -28,7 +29,11 @@ public class Executable {
 					new BinaryTextGenerator();
 					break;
 
-				case 0: case 3:
+				case 3:
+					new BinaryTextReader();
+					break;
+
+				case 0: case 4:
 					break;
 
 				default:
@@ -36,6 +41,6 @@ public class Executable {
 					if(input.hasNextLine())
 						input.nextLine();
 			}
-		} while(choice != 3);
+		} while(choice != 4);
 	}
 }

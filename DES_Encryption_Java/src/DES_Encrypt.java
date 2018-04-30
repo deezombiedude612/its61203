@@ -48,6 +48,7 @@ public class DES_Encrypt {
 			28, 29, 30, 31, 32, 1
 	};
 
+	/* s-boxes */
 	private int[][] s = {
 			{ // S1
 					14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
@@ -147,6 +148,7 @@ public class DES_Encrypt {
 				enter(M);
 				break;
 			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
 				continue;
 			}
 		}
@@ -157,7 +159,7 @@ public class DES_Encrypt {
 				// read(K, 8);
 				break;
 			} catch (Exception ex) {
-				System.out.println();
+				System.out.println(ex.getMessage() + "\n");
 				continue;
 			}
 		}
@@ -177,10 +179,8 @@ public class DES_Encrypt {
 		while(temp.indexOf(' ') != -1)
 			temp = temp.substring(0, temp.indexOf(' ')) + temp.substring(temp.indexOf(' ') + 1);
 
-//		if(temp.length() != 64) {
-//			System.out.println("Input string is not 64 characters long! Add padding(s) of 0s to make it 64 bits if too short. Current length: " + temp.length());
-//			throw new Exception();
-//		}
+		if(temp.length() != 64)
+			throw new Exception("ERROR: Input string is not 64 bits long.");
 
 		for(int i = 0; i < temp.length(); i++) {
 			if(i >= text.length) {
@@ -192,11 +192,8 @@ public class DES_Encrypt {
 				text[i] = true;
 			else if(temp.charAt(i) == '0')
 				text[i] = false;
-			else {
-				System.out.println("ERROR: Invalid input.");
-				// System.exit(1);
-				throw new Exception();
-			}
+			else
+				throw new Exception("ERROR: Invalid input.");
 		}
 	}
 
@@ -308,10 +305,9 @@ public class DES_Encrypt {
 	}
 
 	public void encrypt() {
-		for(int i = 0; i < M.length; i++) {
-			// System.out.print(i + "\t");
+		for(int i = 0; i < M.length; i++)
 			M_ip[i] = M[ip[i] - 1];
-		}
+
 		System.out.print("\nIP = ");
 		read(M_ip, 8);
 
@@ -405,7 +401,7 @@ public class DES_Encrypt {
 			for(int n = 0; n < L[i].length; n++) {
 				if(n % 8 == 0 && n != 0)
 					System.out.print(" ");
-				R[i][n] = xor(L[i][n], feistel[i - 1][n]);    // change S to feistel later
+				R[i][n] = xor(L[i][n], feistel[i - 1][n]);
 				readBit(R[i][n]);
 			}
 
@@ -424,7 +420,17 @@ public class DES_Encrypt {
 		System.out.print("IP-1 (Cipher text) : ");
 		for(int i = 0; i < cipher.length; i++)
 			cipher[i] = R16_L16[ip_1[i] - 1];
-		read(cipher, 4);
+		read(cipher, 8);
+
+		String b = "";
+		for(int i = 0; i < cipher.length; i++) {
+			if(cipher[i])
+				b += "1";
+			else
+				b += "0";
+		}
+		System.out.println();
+		new BinaryTextReader(b);
 	}
 
 	/* xor operation on two single bits */
@@ -445,7 +451,7 @@ public class DES_Encrypt {
 		return result;
 	}
 
-	/* used to find the colum the target number from the S-table */
+	/* used to find the column the target number from the S-table */
 	public int returnColumn(boolean bit1, boolean bit2, boolean bit3, boolean bit4) {
 		int result = 0;
 		if(bit1)

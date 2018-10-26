@@ -286,10 +286,11 @@ public class DES_Encrypt {
 		/* generate K_1 through K_16 */
 		for(int i = 1; i <= 16; i++) {
 			for(int j = 0; j < 48; j++) {
-				if(pc_2[j] < 28)
-					key[i - 1][j] = C[i - 1][pc_2[j]];
+				if((pc_2[j] - 1) < 28)
+					key[i - 1][j] = C[i][pc_2[j] - 1];
+
 				else
-					key[i - 1][j] = D[i - 1][pc_2[j] % 28];
+					key[i - 1][j] = D[i][(pc_2[j] - 1) % 28];
 			}
 		}
 
@@ -396,12 +397,12 @@ public class DES_Encrypt {
 				readBit(feistel[i - 1][j]);
 			}
 
-			/* R_i = L_i xor feistel(R_(i - 1), K_i) */
+			/* R_i = L_(i - 1) xor feistel(R_(i - 1), K_i) */
 			System.out.print("\nR_" + i + " \t\t\t: ");
 			for(int n = 0; n < L[i].length; n++) {
 				if(n % 8 == 0 && n != 0)
 					System.out.print(" ");
-				R[i][n] = xor(L[i][n], feistel[i - 1][n]);
+				R[i][n] = xor(L[i - 1][n], feistel[i - 1][n]);
 				readBit(R[i][n]);
 			}
 
